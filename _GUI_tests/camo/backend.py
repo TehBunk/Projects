@@ -1,3 +1,5 @@
+from poshmark import  *
+
 RUNNING = False
 SEARCH_TERM = "!"
 SPEED = 0
@@ -26,6 +28,10 @@ def clicked_start(window):
         if (len(search) > 0):
             SEARCH_TERM = search
         WINDOW.pushButton_startstop.setText("Stop")
+        run_driver()
+        begin()
+        find_users()
+        main_code(SEARCH_TERM, SPEED) # TODO add user picks follow amount
         RUNNING = True
 
     print(RUNNING, SEARCH_TERM, SPEED, FOLLOW_COUNT, FOLLOWED)
