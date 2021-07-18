@@ -133,6 +133,7 @@ def login_site():
     try:
         actions = ActionChains(DRIVER)
         DRIVER.get("https://poshmark.com/")
+
         check_running_wait(3)
         DRIVER.execute_script("window.open('{}');".format(text_to_speech))
         check_running_wait(3)
@@ -211,7 +212,7 @@ def find_users():
     check_running_wait(7)
 
 
-def main_code(search_term, speed, follow_amount="99999"):
+def main_code(search_term, speed, amount_to_follow="99999"):
 
     if (".com" in search_term):
         print("test")
@@ -245,9 +246,8 @@ def main_code(search_term, speed, follow_amount="99999"):
 
     check_running_wait(3)
 
-    #follow_amount = 1
+    followed_amount = 1
     # input("How many people do you want to follow?: ")
-    amount_to_follow = follow_amount
     amount_to_follow = int(amount_to_follow) + 1
 
     #speed = input("Please input follow speed (Recommended to use .8): ")
@@ -292,7 +292,7 @@ def main_code(search_term, speed, follow_amount="99999"):
                 pass
 
             try:
-                amount_to_string = str(follow_amount)
+                amount_to_string = str(followed_amount)
                 find_follow_button = DRIVER.find_element_by_xpath(
                     '//*[@id="content"]/div/div/div/div[' + amount_to_string + ']/button')
                 not_following = DRIVER.find_element_by_xpath(
@@ -322,7 +322,7 @@ def main_code(search_term, speed, follow_amount="99999"):
                     print("Already Following: ", found_username)
                     already_followed += 1
                     follow_user = 1
-                    follow_amount += 1
+                    followed_amount += 1
 
                 print('debug1')
 
@@ -330,7 +330,7 @@ def main_code(search_term, speed, follow_amount="99999"):
                     print("Already Following: ", found_username)
                     already_followed += 1
                     follow_user = 1
-                    follow_amount += 1
+                    followed_amount += 1
 
                 print('debug2')
 
@@ -341,7 +341,7 @@ def main_code(search_term, speed, follow_amount="99999"):
                                                '//*[@id="content"]/div/div/div/div[' + amount_to_string + ']/button'))))
                     print("Clicked: ", str(real_follow + 1),
                           "Their Username is: ", found_username)
-                    follow_amount += 1
+                    followed_amount += 1
 
                 print('debug3')
 
@@ -352,7 +352,7 @@ def main_code(search_term, speed, follow_amount="99999"):
                                                '//*[@id="content"]/div/div/div/div[' + amount_to_string + ']/button'))))
                     print("Clicked: ", str(real_follow + 1),
                           "Their Username is: ", found_username)
-                    follow_amount += 1
+                    followed_amount += 1
             except:
                 print(f"Error 9 {amount_to_string}")
 
@@ -403,7 +403,7 @@ def main_code(search_term, speed, follow_amount="99999"):
             print("Error 11")
             try:
                 print("Threw an exception... Trying To Continue To Load Page")
-                follow_amount += 1
+                followed_amount += 1
                 try:
                     DRIVER.switch_to.default_content()
                     check_running_wait(3)
