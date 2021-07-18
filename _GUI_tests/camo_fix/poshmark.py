@@ -1,4 +1,5 @@
 
+from tempfile import tempdir
 from vardata import get_running, get_email, get_password, get_thread
 import string
 import os
@@ -212,31 +213,36 @@ def find_users():
 
 def main_code(search_term, speed, follow_amount="99999"):
 
-    try:
-        find_notifications_button = DRIVER.find_element_by_xpath(
-            '/html/body/div[1]/div/div/div[2]/button[1]')
-        find_notifications_button.click()
-    except:
-        print("Error 1")
+    if (".com" in search_term):
+        print("test")
+        DRIVER.get(search_term)
+    else:
+        try:
+            find_notifications_button = DRIVER.find_element_by_xpath(
+                '/html/body/div[1]/div/div/div[2]/button[1]')
+            find_notifications_button.click()
+        except:
+            print("Error 1")
 
-    try:
-        drop_down_listings = DRIVER.find_element_by_xpath(
-            "/html/body/div[1]/header/nav[1]/div/div/form/div[1]/div[1]/div/div[1]/span")
+        try:
+            drop_down_listings = DRIVER.find_element_by_xpath(
+                "/html/body/div[1]/header/nav[1]/div/div/form/div[1]/div[1]/div/div[1]/span")
 
-        drop_down_listings.click()
-        drop_down_people = DRIVER.find_element_by_xpath(
-            "/html/body/div[1]/header/nav[1]/div/div/form/div[2]/span[2]")
-        drop_down_people.click()
-    except:
-        print("Error 2")
+            drop_down_listings.click()
+            drop_down_people = DRIVER.find_element_by_xpath(
+                "/html/body/div[1]/header/nav[1]/div/div/form/div[2]/span[2]")
+            drop_down_people.click()
+        except:
+            print("Error 2")
 
-    check_running_wait(2)
+        check_running_wait(2)
 
-    search_bar = DRIVER.find_element_by_xpath(
-        "/html/body/div[1]/header/nav[1]/div/div/form/div[1]/div[2]/div[1]/div/input")
+        search_bar = DRIVER.find_element_by_xpath(
+            "/html/body/div[1]/header/nav[1]/div/div/form/div[1]/div[2]/div[1]/div/input")
 
-    search_bar.send_keys(search_term)  # input("Search What?: ")
-    search_bar.send_keys(Keys.RETURN)
+        search_bar.send_keys(search_term)  # input("Search What?: ")
+        search_bar.send_keys(Keys.RETURN)
+
     check_running_wait(3)
 
     #follow_amount = 1
@@ -397,7 +403,7 @@ def main_code(search_term, speed, follow_amount="99999"):
             print("Error 11")
             try:
                 print("Threw an exception... Trying To Continue To Load Page")
-
+                follow_amount += 1
                 try:
                     DRIVER.switch_to.default_content()
                     check_running_wait(3)
