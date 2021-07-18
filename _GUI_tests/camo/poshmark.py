@@ -40,7 +40,7 @@ def run_driver():
     # just some options passing in to skip annoying popups
     options.add_argument('--no-first-run --no-service-autorun --password-store=basic')
     DRIVER = uc.Chrome(options=options)
-
+    print('test')
     # PATH = "C:\\Users\\camer\\Desktop\\Poshmark\\chromedriver.exe"
     # driver = webdriver.Chrome(PATH)
 
@@ -114,7 +114,7 @@ def do_captcha():
             pass
 
 
-def begin(email, password):
+def begin(email=test_email, password=test_password):
     try:
         actions = ActionChains(DRIVER)
         account_email = email

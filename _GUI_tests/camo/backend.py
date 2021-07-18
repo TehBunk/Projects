@@ -2,7 +2,7 @@ from poshmark import  *
 
 RUNNING = False
 SEARCH_TERM = "!"
-SPEED = 0
+SPEED = 0.0
 FOLLOW_COUNT = 0
 FOLLOWED = []
 WINDOW = None
@@ -35,6 +35,7 @@ def clicked_start(window):
         EMAIL = WINDOW.lineEdit_email.text()
         PASSWORD = WINDOW.lineEdit_password.text()
         run_driver()
+        print('test')
         begin(EMAIL, PASSWORD)
         find_users()
         main_code(SEARCH_TERM, SPEED) # TODO add user picks follow amount
