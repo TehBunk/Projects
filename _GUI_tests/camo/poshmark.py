@@ -114,11 +114,11 @@ def do_captcha():
             pass
 
 
-def begin():
+def begin(email, password):
     try:
         actions = ActionChains(DRIVER)
-        account_email = test_email
-        account_password = test_password
+        account_email = email
+        account_password = password
         DRIVER.get("https://poshmark.com/")
         time.sleep(3)
         DRIVER.execute_script("window.open('{}');".format(text_to_speech))
@@ -179,7 +179,7 @@ def find_users():
     find_posh_logo.click()
     time.sleep(7)
 
-def main_code(search_term, speed, follow_amount=9999999):
+def main_code(search_term, speed, follow_amount="9999999"):
     try:
         find_notifications_button = DRIVER.find_element_by_xpath('/html/body/div[1]/div/div/div[2]/button[1]')
         find_notifications_button.click()

@@ -34,6 +34,7 @@ class Ui_MainWindow(object):
         MainWindow.setMinimumSize(QtCore.QSize(243, 464))
         MainWindow.setMaximumSize(QtCore.QSize(243, 464))
         MainWindow.setAutoFillBackground(False)
+
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setEnabled(True)
         sizePolicy = QtWidgets.QSizePolicy(
