@@ -18,10 +18,8 @@ def get_history(ticker, time_period, history_type):
     price_data = data.history(period=time_period.value)
     return price_data[history_type.value]
 
-
 def get_info(ticker):
     return get_ticker(ticker).info
-
 
 class HistoryType(Enum):
     OPEN = "Open"
@@ -45,9 +43,3 @@ class TimePeriod(Enum):
     TEN_YEAR = "10y"
     YEAR_TO_DATE = "ytd"
     MAX = "max"
-
-
-ohno = get_info("intc")
-
-for key in ohno.keys():
-    print(key, "-", ohno[key])
