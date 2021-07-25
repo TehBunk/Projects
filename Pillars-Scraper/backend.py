@@ -13,9 +13,16 @@ def set_companies(arr):
     COMPANIES = arr
 
 
-# INCOME STATEMENT
+def drop_dupes(dataframe):
+    cols = []
+    for col in dataframe.columns:
+        if (col in cols) or (".1" in col):
+            dataframe.drop(col, axis=1, inplace=True)
+        cols.append(col)
+    return dataframe
+
+
 OPERATING_REVENUE = "Operating Revenue"
-REVENUE = "Revenue"
 COST_OF_GOODS_SOLD = "Cost of Goods Sold"
 GROSS_PROFIT = "Gross Profit"
 SG_AND_A_EXPENSE = "SG&A Expense"
@@ -25,29 +32,22 @@ OPERATING_INTEREST_EXPENSE = "Operating Interest Expense"
 NET_OPERATING_INTEREST_INCOME = "Net Operating Interest Income"
 TOTAL_OPERATING_EXPENSES = "Total Operating Expenses"
 OPERATING_INCOME = "Operating Income"
-NON_OPERATING_INTEREST_EXPENSE = "Non-Operating Interest Expense"
-NET_NON_OPERATING_INTEREST_INCOME_EXPENSE = "Net Non-Operating Interest Income Expense"
 OTHER_INCOME_AND_EXPENSES = "Other Income & Expenses"
-NET_INTEREST_INCOME = "Net Interest Income"
 PRE_TAX_INCOME = "Pre-Tax Income"
 PROVISION_FOR_INCOME_TAXES = "Provision for Income Taxes"
 INCOME_FROM_CONTINUING_OPERATIONS = "Income from Continuing Operations"
-NET_INCOME = "Net Income"
 NORMALIZED_INCOME = "Normalized Income"
 EBITDA = "EBITDA"
 RECONCILED_DEPRECIATION = "Reconciled Depreciation"
 EBIT = "EBIT"
 EPS_BASIC_FROM_CONTINUING_OPERATIONS = "EPS Basic from Continuing Operations"
 NORMALIZED_BASIC_EPS = "Normalized Basic EPS"
-EPS_BASIC = "EPS Basic"
 EPS_DILUTED_FROM_CONTINUING_OPERATIONS = "EPS Diluted from Continuing Operations"
 NORMALIZED_DILUTED_EPS = "Normalized Diluted EPS"
-EPS_DILUTED = "EPS Diluted"
 AVERAGE_BASIC_SHARES_OUTSTANDING = "Average Basic Shares Outstanding"
 AVERAGE_DILUTED_SHARES_OUTSTANDING = "Average Diluted Shares Outstanding"
 DIVIDEND_PER_SHARE = "Dividend Per Share"
-# INCOME STATEMENT
-# BALANCE SHEET
+OTHER_OPERATING_EXPENSES = "Other Operating Expenses"
 CASH_AND_EQUIVALENTS = "Cash & Equivalents"
 SHORT_TERM_INVESTMENTS = "Short Term Investments"
 CASH_AND_SHORT_TERM_INVESTMENTS = "Cash & Short Term Investments"
@@ -80,10 +80,10 @@ ACCRUED_EXPENSES = "Accrued Expenses"
 PAYABLES_AND_ACCRUED_EXPENSES = "Payables and Accrued Expenses"
 OTHER_CURRENT_BORROWINGS = "Other Current Borrowings"
 CURRENT_PORTION_OF_LONG_TERM_DEBT = "Current Portion of Long Term Debt"
-CURRENT_DEBT_AND_CAPITAL_LEASE_OBLIGATION = "Current Debt & Capital Lease Obligation"
+CURRENT_DEFERREDREVEUE = "Current DeferredReveue"
+OTHER_CURRENT_LIABILITIES = "Other Current Liabilities"
 TOTAL_CURRENT_LIABILITIES = "Total Current Liabilities"
 NON_CURRENT_PORTION_OF_LONG_TERM_DEBT = "Non-Current Portion of Long Term Debt"
-NON_CURRENT_PORTION_OF_LTD_AND_CAPITAL_LEASE_OBLIGATION = "Non-Current Portion of LTD and Capital Lease Obligation"
 LONG_TERM_DEFERRED_TAX_LIABILITIES = "Long Term Deferred Tax Liabilities"
 NON_CURRENT_DEFERRED_LIABILITIES = "Non-Current Deferred Liabilities"
 OTHER_LONG_TERM_LIABILITIES = "Other Long Term Liabilities"
@@ -93,12 +93,11 @@ TOTAL_CAPITAL_STOCK = "Total Capital Stock"
 RETAINED_EARNINGS = "Retained Earnings"
 ACCRUED_COMPREHENSIVE_INC = "Accrued Comprehensive Inc"
 SHAREHOLDERS_EQUITY = "Shareholders Equity"
-# BALANCE SHEET
-# CASHFLOW
+LAND_AND_IMPROVEMENTS = "Land & Improvements"
+CURRENT_TAX_PAYABLE = "Current Tax Payable"
 NET_INCOME = "Net Income"
 OPERATING_GAINS_LOSSES = "Operating Gains Losses"
 TOTAL_DEPRECIATION_AND_AMORTIZATION = "Total Depreciation & Amortization"
-TOTAL_DEPRECIATION_AMORTIZATION_DEPLETION = "Total Depreciation, Amortization, Depletion"
 DEFERRED_TAXES = "Deferred Taxes"
 STOCK_BASED_COMPENSATION = "Stock Based Compensation"
 OTHER_NONCASH_ITEMS = "Other Noncash Items"
@@ -109,7 +108,7 @@ CHANGES_IN_OTHER_WORKING_CAP = "Changes in Other Working Cap"
 CHANGES_IN_WORKING_CAPITAL = "Changes in Working Capital"
 CASH_FROM_OPERATIONS = "Cash from Operations"
 NET_CHANGE_IN_CAPITAL_EXPENDITURES = "Net Change in Capital Expenditures"
-FREE_CASH_FLOW = "Free Cash Flow (5YR AVG: $14.62B)"
+FREE_CASH_FLOW = "Free Cash Flow (5YR AVG: $14.93B)"
 NET_CHANGE_IN_PP_AND_E = "Net Change in PP&E"
 NET_CHANGE_IN_INTANGIBLES = "Net Change in Intangibles"
 ACQUISITIONS_AND_DISPOSITIONS = "Acquisitions/Dispositions"
@@ -130,4 +129,4 @@ ENDING_CASH = "Ending Cash"
 ISSUANCE_OF_DEBT = "Issuance of Debt"
 DEBT_REPAYMENT = "Debt Repayment"
 REPURCHASE_OF_CAPITAL_STOCK = "Repurchase of Capital Stock"
-# CASHFLOW
+COMMON_STOCK_ISSUANCE = "Common Stock Issuance"

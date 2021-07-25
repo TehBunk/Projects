@@ -1,6 +1,7 @@
 import os
 import json
 import pandas as pd
+from backend import *
 from pathlib import Path
 from datetime import datetime
 
@@ -8,19 +9,16 @@ from pkg_resources import get_distribution
 
 
 class Company:
-    def __init__(self, ticker, date=None, income=None, balance=None, cashflow=None, save=False):
+    def __init__(self, ticker, date=None, data=None, save=False):
         self.ticker = ticker.upper()
         self.date = (self.get_string_date(datetime.now())
                      if date == None else date)
-        self.incomedata = income
-        self.balancedata = balance
-        self.cashflowdata = cashflow
-
+        self.data = data
         if (save):
             self.save_company_data()
 
     def get_data(self):
-        return [self.incomedata, self.balancedata, self.cashflowdata]
+        return self.data
 
     def get_directory(self):
         dir = os.getcwd() + f"/Pillars-Scraper/comp_data/{self.ticker}/"
@@ -35,12 +33,12 @@ class Company:
         data = {"Ticker": self.ticker, "Date": self.date}
         json.dump(data, file)
 
-        if (self.incomedata is not None):
-            self.incomedata.to_csv(r"{0}income.csv".format(dir))
-        if (self.balancedata is not None):
-            self.balancedata.to_csv(r"{0}balance.csv".format(dir))
-        if (self.cashflowdata is not None):
-            self.cashflowdata.to_csv(r"{0}cashflow.csv".format(dir))
+        if (self.data is not None):
+            self.data.to_csv(r"{0}data.csv".format(dir))
+        # if (self.balancedata is not None):
+        #     self.balancedata.to_csv(r"{0}balance.csv".format(dir))
+        # if (self.cashflowdata is not None):
+        #     self.cashflowdata.to_csv(r"{0}cashflow.csv".format(dir))
 
     def get_string_date(self, date):
         return date.strftime("%m-%d-%Y")
@@ -64,11 +62,9 @@ def load_companys():
             ticker = data["Ticker"]
             date = data["Date"]
 
-            income = pd.read_csv(f"{cdir}income.csv", index_col=0)
-            balance = pd.read_csv(f"{cdir}balance.csv", index_col=0)
-            cashflow = pd.read_csv(f"{cdir}cashflow.csv", index_col=0)
+            df_data = pd.read_csv(f"{cdir}data.csv", index_col=0)
 
-            companies.append(Company(ticker, date, income, balance, cashflow))
+            companies.append(Company(ticker, date, df_data))
             print(f"Company data has been loaded for - {ticker}")
         except:
             print(f"Failed to load files for {cdir}")

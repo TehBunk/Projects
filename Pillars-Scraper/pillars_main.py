@@ -1,10 +1,11 @@
-import os
+
 import time
 import traceback
+import numpy as np
 import pandas as pd
 from enum import Enum
+from backend import drop_dupes
 from pcompany import *
-from pandasgui import show
 
 
 from selenium.webdriver.common.by import By
@@ -124,7 +125,8 @@ def get_page_data(blocks):
         total_cols = int((len(header_data_cells) / blocks))
         # these are the dates listed
         for pos in range(0, (total_cols - 1)):
-            dates_arr.append(header_data_cells[pos + 1].text)
+            dates_arr.append(
+                (header_data_cells[pos + 1].text).replace("-12", ""))
 
         # count = 0
         # fix_last = 0
@@ -150,15 +152,14 @@ def get_page_data(blocks):
             # at the end of the row
             cell = income_data_cells[cell_number]
             if ((cell_number % (total_cols) == 0 and cell_number != 0) or cell_number == len(income_data_cells) - 1):
-                temp_data.append(cache_data)
+                temp_data.append(format_arr(cache_data))
                 print(cache_data)
                 cache_data = []
             # if the row is blank and has no value
             if len(cell.text) < 2 or cell.text is None or cell.text == " ":
-                cache_data.append("N/A")
+                cache_data.append(np.nan)
             else:  # format the value to be in billions
-                formatted_text = format_cell_text(cell.text, cell_number)
-                cache_data.append(formatted_text)
+                cache_data.append(cell.text)
 
         data_dic = {}
         # for each of the rows in the table
@@ -176,16 +177,12 @@ def get_page_data(blocks):
                 pos += 1
             data_dic[title] = cache_arr
 
-        # for key in data_dic.keys():
-        #    print(key, " - ", data_dic[key])
-        # print("\n")
-
         data_frame = pd.DataFrame.from_dict(
             data_dic, columns=dates_arr, orient='index')
 
     except:  # failed to load data some reason...
         print("Failed while loading income data.")
-        # traceback.print_exc()
+        traceback.print_exc()
         CHROME_DRIVER.quit()
         quit()
 
@@ -201,80 +198,35 @@ def get_page_data(blocks):
         return data_frame
 
 
-def format_cell_text(text, count):
-    if (count % 11 == 0 or ("$" not in text)):
-        if ("Free Cash Flow" in text):
-            return "Free Cash Flow"
-        return text.replace("'", "").replace(",", "")
-    formatted = text.replace("B", "")
-    if ("M" in text):
-        fmt_million = text.replace(".", "").replace("M", "")
-        if ("$" in fmt_million):
-            formatted = fmt_million.replace("$", "$.")
+def format_arr(arr):
+    for i in range(1, len(arr)):
+        arr[i] = format_str(arr[i])
+    return arr
+
+
+def format_str(str):
+    if (type(str) is float):
+        return str
+
+    formatted = str.replace("B", "")
+
+    if ("M" in formatted):
+        formatted = formatted.replace(".", "").replace("M", "")
+        if ("$" in formatted):
+            formatted = formatted.replace("$", "0.")
+        elif ("-" in formatted):
+            formatted = formatted.replace("-", "-0.")
         else:
-            formatted = f".{fmt_million}"
-    if ("K" in text):
-        fmt_thousand = text.replace(".", "").replace("K", "")
-        if ("$" in fmt_thousand):
-            formatted = fmt_thousand.replace("$", "$.000")
+            formatted = f".{formatted}"
+    if ("K" in formatted):
+        formatted = formatted.replace(".", "").replace("K", "")
+        if ("$" in formatted):
+            formatted = formatted.replace("$", "0.000")
+        elif ("-" in formatted):
+            formatted = formatted.replace("-", "-0.000")
         else:
-            formatted = f".000{fmt_thousand}"
-    return formatted
-
-
-def run(ticker="intc"):
-    global CHROME_DRIVER
-    load_income = True
-    load_balance = True
-    load_cashflow = True
-
-    data_path = os.getcwd() + f"/Pillars-Scraper/comp_data/{ticker}-"
-
-    if (os.path.exists(f"{data_path}income.csv")):
-        load_income = False
-        print("Income data already exists, opening.")
-        income_data = pd.read_csv(f"{data_path}income.csv", index_col=0)
-        show(income_data)
-    if (os.path.exists(f"{data_path}balance.csv")):
-        load_balance = False
-        print("Balance data already exists, opening.")
-        balance_data = pd.read_csv(f"{data_path}balance.csv", index_col=0)
-        show(balance_data)
-    if (os.path.exists(f"{data_path}cashflow.csv")):
-        load_cashflow = False
-        print("Cashflow data already exists, opening.")
-        cashflow_data = pd.read_csv(f"{data_path}cashflow.csv", index_col=0)
-        show(cashflow_data)
-
-    if (load_income or load_balance or load_cashflow):
-        CHROME_DRIVER = run_driver()
-
-        time.sleep(1)
-
-        CHROME_DRIVER.get(LINK)
-        process_login()
-
-        if (load_income):
-            print("Preparing to load income statement..")
-            redirect_to_page(ticker, Page.INCOME_STATEMENT)
-            income_data = scrape_page(4)
-            income_data.to_csv(r"{0}income.csv".format(data_path))
-
-        if (load_balance):
-            print("Preparing to load balance sheet..")
-            redirect_to_page(ticker, Page.BALANCE_SHEET)
-            balance_data = scrape_page(3)
-            balance_data.to_csv(r"{0}balance.csv".format(data_path))
-
-        if (load_cashflow):
-            print("Preparing to load cashflow..")
-            redirect_to_page(ticker, Page.CASH_FLOW)
-            cashflow_data = scrape_page(5)
-            cashflow_data.to_csv(r"{0}cashflow.csv".format(data_path))
-
-    print("Data has been loaded. Done!")
-    if (CHROME_DRIVER != None):
-        CHROME_DRIVER.quit()
+            formatted = f".000{formatted}"
+    return formatted.replace("$", "")
 
 
 def scrape_company(ticker, save=True):
@@ -296,4 +248,8 @@ def scrape_company(ticker, save=True):
     if (CHROME_DRIVER != None):
         CHROME_DRIVER.quit()
 
-    return Company(ticker, None, income_data, balance_data, cashflow_data, save)
+    id = drop_dupes(income_data)
+    bd = drop_dupes(balance_data)
+    cd = drop_dupes(cashflow_data)
+    data = pd.concat([id, bd, cd]).drop_duplicates()
+    return Company(ticker, None, data, save)
